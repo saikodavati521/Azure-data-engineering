@@ -1,0 +1,81 @@
+{
+	"name": "worldbank",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "FileLocation",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "Development Indicators",
+			"location": {
+				"type": "FileServerLocation",
+				"fileName": "WorldBank.xlsx"
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": [
+			{
+				"name": "Country Name",
+				"type": "String"
+			},
+			{
+				"name": "Country Code",
+				"type": "String"
+			},
+			{
+				"name": "Region",
+				"type": "String"
+			},
+			{
+				"name": "IncomeGroup",
+				"type": "String"
+			},
+			{
+				"name": "Year",
+				"type": "String"
+			},
+			{
+				"name": "Birth rate, crude (per 1,000 people)",
+				"type": "String"
+			},
+			{
+				"name": "Death rate, crude (per 1,000 people)",
+				"type": "String"
+			},
+			{
+				"name": "Electric power consumption (kWh per capita)",
+				"type": "String"
+			},
+			{
+				"name": "GDP (USD)",
+				"type": "String"
+			},
+			{
+				"name": "GDP per capita (USD)",
+				"type": "String"
+			},
+			{
+				"name": "Individuals using the Internet (% of population)",
+				"type": "String"
+			},
+			{
+				"name": "Infant mortality rate (per 1,000 live births)",
+				"type": "String"
+			},
+			{
+				"name": "Life expectancy at birth (years)",
+				"type": "String"
+			},
+			{
+				"name": "Population density (people per sq. km of land area)",
+				"type": "String"
+			},
+			{
+				"name": "Unemployment (% of total labor force) (modeled ILO estimate)",
+				"type": "String"
+			}
+		]
+	}
+}
