@@ -1,0 +1,15 @@
+{
+	"name": "indiaeconomicsouth",
+	"properties": {
+		"trustModeClaimForMi": {
+			"value": "Disabled",
+			"editable": true
+		}
+	},
+	"location": "centralindia",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "70aa2e08-69e9-48ff-822e-78c87aca9503",
+		"tenantId": "9c2cdaca-4fd9-4b29-a225-1668739dde7d"
+	}
+}
