@@ -1,0 +1,4634 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "indiaeconomicsouth"
+		},
+		"AzureDataLakeStorage1_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage1'"
+		},
+		"FileLocation_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'FileLocation'"
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://economicindiast.dfs.core.windows.net/"
+		},
+		"FileLocation_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "C:\\Users\\phani\\Downloads\\World EconomicIndicators"
+		},
+		"FileLocation_properties_typeProperties_userId": {
+			"type": "string",
+			"defaultValue": "phani"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureDataLakeStorage1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('AzureDataLakeStorage1_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/azureindiaintegrationruntime')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "SelfHosted",
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/sink')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileSystem": "raw-data"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FileLocation')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "FileServer",
+				"typeProperties": {
+					"host": "[parameters('FileLocation_properties_typeProperties_host')]",
+					"userId": "[parameters('FileLocation_properties_typeProperties_userId')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('FileLocation_password')]"
+					}
+				},
+				"connectVia": {
+					"referenceName": "azureindiaintegrationruntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/azureindiaintegrationruntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/HDI')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "FileLocation",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "FileServerLocation",
+						"fileName": "HDI.csv"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "iso3",
+						"type": "String"
+					},
+					{
+						"name": "country",
+						"type": "String"
+					},
+					{
+						"name": "hdicode",
+						"type": "String"
+					},
+					{
+						"name": "region",
+						"type": "String"
+					},
+					{
+						"name": "hdi_rank_2021",
+						"type": "String"
+					},
+					{
+						"name": "hdi_1990",
+						"type": "String"
+					},
+					{
+						"name": "hdi_1991",
+						"type": "String"
+					},
+					{
+						"name": "hdi_1992",
+						"type": "String"
+					},
+					{
+						"name": "hdi_1993",
+						"type": "String"
+					},
+					{
+						"name": "hdi_1994",
+						"type": "String"
+					},
+					{
+						"name": "hdi_1995",
+						"type": "String"
+					},
+					{
+						"name": "hdi_1996",
+						"type": "String"
+					},
+					{
+						"name": "hdi_1997",
+						"type": "String"
+					},
+					{
+						"name": "hdi_1998",
+						"type": "String"
+					},
+					{
+						"name": "hdi_1999",
+						"type": "String"
+					},
+					{
+						"name": "hdi_2000",
+						"type": "String"
+					},
+					{
+						"name": "hdi_2001",
+						"type": "String"
+					},
+					{
+						"name": "hdi_2002",
+						"type": "String"
+					},
+					{
+						"name": "hdi_2003",
+						"type": "String"
+					},
+					{
+						"name": "hdi_2004",
+						"type": "String"
+					},
+					{
+						"name": "hdi_2005",
+						"type": "String"
+					},
+					{
+						"name": "hdi_2006",
+						"type": "String"
+					},
+					{
+						"name": "hdi_2007",
+						"type": "String"
+					},
+					{
+						"name": "hdi_2008",
+						"type": "String"
+					},
+					{
+						"name": "hdi_2009",
+						"type": "String"
+					},
+					{
+						"name": "hdi_2010",
+						"type": "String"
+					},
+					{
+						"name": "hdi_2011",
+						"type": "String"
+					},
+					{
+						"name": "hdi_2012",
+						"type": "String"
+					},
+					{
+						"name": "hdi_2013",
+						"type": "String"
+					},
+					{
+						"name": "hdi_2014",
+						"type": "String"
+					},
+					{
+						"name": "hdi_2015",
+						"type": "String"
+					},
+					{
+						"name": "hdi_2016",
+						"type": "String"
+					},
+					{
+						"name": "hdi_2017",
+						"type": "String"
+					},
+					{
+						"name": "hdi_2018",
+						"type": "String"
+					},
+					{
+						"name": "hdi_2019",
+						"type": "String"
+					},
+					{
+						"name": "hdi_2020",
+						"type": "String"
+					},
+					{
+						"name": "hdi_2021",
+						"type": "String"
+					},
+					{
+						"name": "le_1990",
+						"type": "String"
+					},
+					{
+						"name": "le_1991",
+						"type": "String"
+					},
+					{
+						"name": "le_1992",
+						"type": "String"
+					},
+					{
+						"name": "le_1993",
+						"type": "String"
+					},
+					{
+						"name": "le_1994",
+						"type": "String"
+					},
+					{
+						"name": "le_1995",
+						"type": "String"
+					},
+					{
+						"name": "le_1996",
+						"type": "String"
+					},
+					{
+						"name": "le_1997",
+						"type": "String"
+					},
+					{
+						"name": "le_1998",
+						"type": "String"
+					},
+					{
+						"name": "le_1999",
+						"type": "String"
+					},
+					{
+						"name": "le_2000",
+						"type": "String"
+					},
+					{
+						"name": "le_2001",
+						"type": "String"
+					},
+					{
+						"name": "le_2002",
+						"type": "String"
+					},
+					{
+						"name": "le_2003",
+						"type": "String"
+					},
+					{
+						"name": "le_2004",
+						"type": "String"
+					},
+					{
+						"name": "le_2005",
+						"type": "String"
+					},
+					{
+						"name": "le_2006",
+						"type": "String"
+					},
+					{
+						"name": "le_2007",
+						"type": "String"
+					},
+					{
+						"name": "le_2008",
+						"type": "String"
+					},
+					{
+						"name": "le_2009",
+						"type": "String"
+					},
+					{
+						"name": "le_2010",
+						"type": "String"
+					},
+					{
+						"name": "le_2011",
+						"type": "String"
+					},
+					{
+						"name": "le_2012",
+						"type": "String"
+					},
+					{
+						"name": "le_2013",
+						"type": "String"
+					},
+					{
+						"name": "le_2014",
+						"type": "String"
+					},
+					{
+						"name": "le_2015",
+						"type": "String"
+					},
+					{
+						"name": "le_2016",
+						"type": "String"
+					},
+					{
+						"name": "le_2017",
+						"type": "String"
+					},
+					{
+						"name": "le_2018",
+						"type": "String"
+					},
+					{
+						"name": "le_2019",
+						"type": "String"
+					},
+					{
+						"name": "le_2020",
+						"type": "String"
+					},
+					{
+						"name": "le_2021",
+						"type": "String"
+					},
+					{
+						"name": "eys_1990",
+						"type": "String"
+					},
+					{
+						"name": "eys_1991",
+						"type": "String"
+					},
+					{
+						"name": "eys_1992",
+						"type": "String"
+					},
+					{
+						"name": "eys_1993",
+						"type": "String"
+					},
+					{
+						"name": "eys_1994",
+						"type": "String"
+					},
+					{
+						"name": "eys_1995",
+						"type": "String"
+					},
+					{
+						"name": "eys_1996",
+						"type": "String"
+					},
+					{
+						"name": "eys_1997",
+						"type": "String"
+					},
+					{
+						"name": "eys_1998",
+						"type": "String"
+					},
+					{
+						"name": "eys_1999",
+						"type": "String"
+					},
+					{
+						"name": "eys_2000",
+						"type": "String"
+					},
+					{
+						"name": "eys_2001",
+						"type": "String"
+					},
+					{
+						"name": "eys_2002",
+						"type": "String"
+					},
+					{
+						"name": "eys_2003",
+						"type": "String"
+					},
+					{
+						"name": "eys_2004",
+						"type": "String"
+					},
+					{
+						"name": "eys_2005",
+						"type": "String"
+					},
+					{
+						"name": "eys_2006",
+						"type": "String"
+					},
+					{
+						"name": "eys_2007",
+						"type": "String"
+					},
+					{
+						"name": "eys_2008",
+						"type": "String"
+					},
+					{
+						"name": "eys_2009",
+						"type": "String"
+					},
+					{
+						"name": "eys_2010",
+						"type": "String"
+					},
+					{
+						"name": "eys_2011",
+						"type": "String"
+					},
+					{
+						"name": "eys_2012",
+						"type": "String"
+					},
+					{
+						"name": "eys_2013",
+						"type": "String"
+					},
+					{
+						"name": "eys_2014",
+						"type": "String"
+					},
+					{
+						"name": "eys_2015",
+						"type": "String"
+					},
+					{
+						"name": "eys_2016",
+						"type": "String"
+					},
+					{
+						"name": "eys_2017",
+						"type": "String"
+					},
+					{
+						"name": "eys_2018",
+						"type": "String"
+					},
+					{
+						"name": "eys_2019",
+						"type": "String"
+					},
+					{
+						"name": "eys_2020",
+						"type": "String"
+					},
+					{
+						"name": "eys_2021",
+						"type": "String"
+					},
+					{
+						"name": "mys_1990",
+						"type": "String"
+					},
+					{
+						"name": "mys_1991",
+						"type": "String"
+					},
+					{
+						"name": "mys_1992",
+						"type": "String"
+					},
+					{
+						"name": "mys_1993",
+						"type": "String"
+					},
+					{
+						"name": "mys_1994",
+						"type": "String"
+					},
+					{
+						"name": "mys_1995",
+						"type": "String"
+					},
+					{
+						"name": "mys_1996",
+						"type": "String"
+					},
+					{
+						"name": "mys_1997",
+						"type": "String"
+					},
+					{
+						"name": "mys_1998",
+						"type": "String"
+					},
+					{
+						"name": "mys_1999",
+						"type": "String"
+					},
+					{
+						"name": "mys_2000",
+						"type": "String"
+					},
+					{
+						"name": "mys_2001",
+						"type": "String"
+					},
+					{
+						"name": "mys_2002",
+						"type": "String"
+					},
+					{
+						"name": "mys_2003",
+						"type": "String"
+					},
+					{
+						"name": "mys_2004",
+						"type": "String"
+					},
+					{
+						"name": "mys_2005",
+						"type": "String"
+					},
+					{
+						"name": "mys_2006",
+						"type": "String"
+					},
+					{
+						"name": "mys_2007",
+						"type": "String"
+					},
+					{
+						"name": "mys_2008",
+						"type": "String"
+					},
+					{
+						"name": "mys_2009",
+						"type": "String"
+					},
+					{
+						"name": "mys_2010",
+						"type": "String"
+					},
+					{
+						"name": "mys_2011",
+						"type": "String"
+					},
+					{
+						"name": "mys_2012",
+						"type": "String"
+					},
+					{
+						"name": "mys_2013",
+						"type": "String"
+					},
+					{
+						"name": "mys_2014",
+						"type": "String"
+					},
+					{
+						"name": "mys_2015",
+						"type": "String"
+					},
+					{
+						"name": "mys_2016",
+						"type": "String"
+					},
+					{
+						"name": "mys_2017",
+						"type": "String"
+					},
+					{
+						"name": "mys_2018",
+						"type": "String"
+					},
+					{
+						"name": "mys_2019",
+						"type": "String"
+					},
+					{
+						"name": "mys_2020",
+						"type": "String"
+					},
+					{
+						"name": "mys_2021",
+						"type": "String"
+					},
+					{
+						"name": "gnipc_1990",
+						"type": "String"
+					},
+					{
+						"name": "gnipc_1991",
+						"type": "String"
+					},
+					{
+						"name": "gnipc_1992",
+						"type": "String"
+					},
+					{
+						"name": "gnipc_1993",
+						"type": "String"
+					},
+					{
+						"name": "gnipc_1994",
+						"type": "String"
+					},
+					{
+						"name": "gnipc_1995",
+						"type": "String"
+					},
+					{
+						"name": "gnipc_1996",
+						"type": "String"
+					},
+					{
+						"name": "gnipc_1997",
+						"type": "String"
+					},
+					{
+						"name": "gnipc_1998",
+						"type": "String"
+					},
+					{
+						"name": "gnipc_1999",
+						"type": "String"
+					},
+					{
+						"name": "gnipc_2000",
+						"type": "String"
+					},
+					{
+						"name": "gnipc_2001",
+						"type": "String"
+					},
+					{
+						"name": "gnipc_2002",
+						"type": "String"
+					},
+					{
+						"name": "gnipc_2003",
+						"type": "String"
+					},
+					{
+						"name": "gnipc_2004",
+						"type": "String"
+					},
+					{
+						"name": "gnipc_2005",
+						"type": "String"
+					},
+					{
+						"name": "gnipc_2006",
+						"type": "String"
+					},
+					{
+						"name": "gnipc_2007",
+						"type": "String"
+					},
+					{
+						"name": "gnipc_2008",
+						"type": "String"
+					},
+					{
+						"name": "gnipc_2009",
+						"type": "String"
+					},
+					{
+						"name": "gnipc_2010",
+						"type": "String"
+					},
+					{
+						"name": "gnipc_2011",
+						"type": "String"
+					},
+					{
+						"name": "gnipc_2012",
+						"type": "String"
+					},
+					{
+						"name": "gnipc_2013",
+						"type": "String"
+					},
+					{
+						"name": "gnipc_2014",
+						"type": "String"
+					},
+					{
+						"name": "gnipc_2015",
+						"type": "String"
+					},
+					{
+						"name": "gnipc_2016",
+						"type": "String"
+					},
+					{
+						"name": "gnipc_2017",
+						"type": "String"
+					},
+					{
+						"name": "gnipc_2018",
+						"type": "String"
+					},
+					{
+						"name": "gnipc_2019",
+						"type": "String"
+					},
+					{
+						"name": "gnipc_2020",
+						"type": "String"
+					},
+					{
+						"name": "gnipc_2021",
+						"type": "String"
+					},
+					{
+						"name": "gdi_group_2021",
+						"type": "String"
+					},
+					{
+						"name": "gdi_1990",
+						"type": "String"
+					},
+					{
+						"name": "gdi_1991",
+						"type": "String"
+					},
+					{
+						"name": "gdi_1992",
+						"type": "String"
+					},
+					{
+						"name": "gdi_1993",
+						"type": "String"
+					},
+					{
+						"name": "gdi_1994",
+						"type": "String"
+					},
+					{
+						"name": "gdi_1995",
+						"type": "String"
+					},
+					{
+						"name": "gdi_1996",
+						"type": "String"
+					},
+					{
+						"name": "gdi_1997",
+						"type": "String"
+					},
+					{
+						"name": "gdi_1998",
+						"type": "String"
+					},
+					{
+						"name": "gdi_1999",
+						"type": "String"
+					},
+					{
+						"name": "gdi_2000",
+						"type": "String"
+					},
+					{
+						"name": "gdi_2001",
+						"type": "String"
+					},
+					{
+						"name": "gdi_2002",
+						"type": "String"
+					},
+					{
+						"name": "gdi_2003",
+						"type": "String"
+					},
+					{
+						"name": "gdi_2004",
+						"type": "String"
+					},
+					{
+						"name": "gdi_2005",
+						"type": "String"
+					},
+					{
+						"name": "gdi_2006",
+						"type": "String"
+					},
+					{
+						"name": "gdi_2007",
+						"type": "String"
+					},
+					{
+						"name": "gdi_2008",
+						"type": "String"
+					},
+					{
+						"name": "gdi_2009",
+						"type": "String"
+					},
+					{
+						"name": "gdi_2010",
+						"type": "String"
+					},
+					{
+						"name": "gdi_2011",
+						"type": "String"
+					},
+					{
+						"name": "gdi_2012",
+						"type": "String"
+					},
+					{
+						"name": "gdi_2013",
+						"type": "String"
+					},
+					{
+						"name": "gdi_2014",
+						"type": "String"
+					},
+					{
+						"name": "gdi_2015",
+						"type": "String"
+					},
+					{
+						"name": "gdi_2016",
+						"type": "String"
+					},
+					{
+						"name": "gdi_2017",
+						"type": "String"
+					},
+					{
+						"name": "gdi_2018",
+						"type": "String"
+					},
+					{
+						"name": "gdi_2019",
+						"type": "String"
+					},
+					{
+						"name": "gdi_2020",
+						"type": "String"
+					},
+					{
+						"name": "gdi_2021",
+						"type": "String"
+					},
+					{
+						"name": "hdi_f_1990",
+						"type": "String"
+					},
+					{
+						"name": "hdi_f_1991",
+						"type": "String"
+					},
+					{
+						"name": "hdi_f_1992",
+						"type": "String"
+					},
+					{
+						"name": "hdi_f_1993",
+						"type": "String"
+					},
+					{
+						"name": "hdi_f_1994",
+						"type": "String"
+					},
+					{
+						"name": "hdi_f_1995",
+						"type": "String"
+					},
+					{
+						"name": "hdi_f_1996",
+						"type": "String"
+					},
+					{
+						"name": "hdi_f_1997",
+						"type": "String"
+					},
+					{
+						"name": "hdi_f_1998",
+						"type": "String"
+					},
+					{
+						"name": "hdi_f_1999",
+						"type": "String"
+					},
+					{
+						"name": "hdi_f_2000",
+						"type": "String"
+					},
+					{
+						"name": "hdi_f_2001",
+						"type": "String"
+					},
+					{
+						"name": "hdi_f_2002",
+						"type": "String"
+					},
+					{
+						"name": "hdi_f_2003",
+						"type": "String"
+					},
+					{
+						"name": "hdi_f_2004",
+						"type": "String"
+					},
+					{
+						"name": "hdi_f_2005",
+						"type": "String"
+					},
+					{
+						"name": "hdi_f_2006",
+						"type": "String"
+					},
+					{
+						"name": "hdi_f_2007",
+						"type": "String"
+					},
+					{
+						"name": "hdi_f_2008",
+						"type": "String"
+					},
+					{
+						"name": "hdi_f_2009",
+						"type": "String"
+					},
+					{
+						"name": "hdi_f_2010",
+						"type": "String"
+					},
+					{
+						"name": "hdi_f_2011",
+						"type": "String"
+					},
+					{
+						"name": "hdi_f_2012",
+						"type": "String"
+					},
+					{
+						"name": "hdi_f_2013",
+						"type": "String"
+					},
+					{
+						"name": "hdi_f_2014",
+						"type": "String"
+					},
+					{
+						"name": "hdi_f_2015",
+						"type": "String"
+					},
+					{
+						"name": "hdi_f_2016",
+						"type": "String"
+					},
+					{
+						"name": "hdi_f_2017",
+						"type": "String"
+					},
+					{
+						"name": "hdi_f_2018",
+						"type": "String"
+					},
+					{
+						"name": "hdi_f_2019",
+						"type": "String"
+					},
+					{
+						"name": "hdi_f_2020",
+						"type": "String"
+					},
+					{
+						"name": "hdi_f_2021",
+						"type": "String"
+					},
+					{
+						"name": "le_f_1990",
+						"type": "String"
+					},
+					{
+						"name": "le_f_1991",
+						"type": "String"
+					},
+					{
+						"name": "le_f_1992",
+						"type": "String"
+					},
+					{
+						"name": "le_f_1993",
+						"type": "String"
+					},
+					{
+						"name": "le_f_1994",
+						"type": "String"
+					},
+					{
+						"name": "le_f_1995",
+						"type": "String"
+					},
+					{
+						"name": "le_f_1996",
+						"type": "String"
+					},
+					{
+						"name": "le_f_1997",
+						"type": "String"
+					},
+					{
+						"name": "le_f_1998",
+						"type": "String"
+					},
+					{
+						"name": "le_f_1999",
+						"type": "String"
+					},
+					{
+						"name": "le_f_2000",
+						"type": "String"
+					},
+					{
+						"name": "le_f_2001",
+						"type": "String"
+					},
+					{
+						"name": "le_f_2002",
+						"type": "String"
+					},
+					{
+						"name": "le_f_2003",
+						"type": "String"
+					},
+					{
+						"name": "le_f_2004",
+						"type": "String"
+					},
+					{
+						"name": "le_f_2005",
+						"type": "String"
+					},
+					{
+						"name": "le_f_2006",
+						"type": "String"
+					},
+					{
+						"name": "le_f_2007",
+						"type": "String"
+					},
+					{
+						"name": "le_f_2008",
+						"type": "String"
+					},
+					{
+						"name": "le_f_2009",
+						"type": "String"
+					},
+					{
+						"name": "le_f_2010",
+						"type": "String"
+					},
+					{
+						"name": "le_f_2011",
+						"type": "String"
+					},
+					{
+						"name": "le_f_2012",
+						"type": "String"
+					},
+					{
+						"name": "le_f_2013",
+						"type": "String"
+					},
+					{
+						"name": "le_f_2014",
+						"type": "String"
+					},
+					{
+						"name": "le_f_2015",
+						"type": "String"
+					},
+					{
+						"name": "le_f_2016",
+						"type": "String"
+					},
+					{
+						"name": "le_f_2017",
+						"type": "String"
+					},
+					{
+						"name": "le_f_2018",
+						"type": "String"
+					},
+					{
+						"name": "le_f_2019",
+						"type": "String"
+					},
+					{
+						"name": "le_f_2020",
+						"type": "String"
+					},
+					{
+						"name": "le_f_2021",
+						"type": "String"
+					},
+					{
+						"name": "eys_f_1990",
+						"type": "String"
+					},
+					{
+						"name": "eys_f_1991",
+						"type": "String"
+					},
+					{
+						"name": "eys_f_1992",
+						"type": "String"
+					},
+					{
+						"name": "eys_f_1993",
+						"type": "String"
+					},
+					{
+						"name": "eys_f_1994",
+						"type": "String"
+					},
+					{
+						"name": "eys_f_1995",
+						"type": "String"
+					},
+					{
+						"name": "eys_f_1996",
+						"type": "String"
+					},
+					{
+						"name": "eys_f_1997",
+						"type": "String"
+					},
+					{
+						"name": "eys_f_1998",
+						"type": "String"
+					},
+					{
+						"name": "eys_f_1999",
+						"type": "String"
+					},
+					{
+						"name": "eys_f_2000",
+						"type": "String"
+					},
+					{
+						"name": "eys_f_2001",
+						"type": "String"
+					},
+					{
+						"name": "eys_f_2002",
+						"type": "String"
+					},
+					{
+						"name": "eys_f_2003",
+						"type": "String"
+					},
+					{
+						"name": "eys_f_2004",
+						"type": "String"
+					},
+					{
+						"name": "eys_f_2005",
+						"type": "String"
+					},
+					{
+						"name": "eys_f_2006",
+						"type": "String"
+					},
+					{
+						"name": "eys_f_2007",
+						"type": "String"
+					},
+					{
+						"name": "eys_f_2008",
+						"type": "String"
+					},
+					{
+						"name": "eys_f_2009",
+						"type": "String"
+					},
+					{
+						"name": "eys_f_2010",
+						"type": "String"
+					},
+					{
+						"name": "eys_f_2011",
+						"type": "String"
+					},
+					{
+						"name": "eys_f_2012",
+						"type": "String"
+					},
+					{
+						"name": "eys_f_2013",
+						"type": "String"
+					},
+					{
+						"name": "eys_f_2014",
+						"type": "String"
+					},
+					{
+						"name": "eys_f_2015",
+						"type": "String"
+					},
+					{
+						"name": "eys_f_2016",
+						"type": "String"
+					},
+					{
+						"name": "eys_f_2017",
+						"type": "String"
+					},
+					{
+						"name": "eys_f_2018",
+						"type": "String"
+					},
+					{
+						"name": "eys_f_2019",
+						"type": "String"
+					},
+					{
+						"name": "eys_f_2020",
+						"type": "String"
+					},
+					{
+						"name": "eys_f_2021",
+						"type": "String"
+					},
+					{
+						"name": "mys_f_1990",
+						"type": "String"
+					},
+					{
+						"name": "mys_f_1991",
+						"type": "String"
+					},
+					{
+						"name": "mys_f_1992",
+						"type": "String"
+					},
+					{
+						"name": "mys_f_1993",
+						"type": "String"
+					},
+					{
+						"name": "mys_f_1994",
+						"type": "String"
+					},
+					{
+						"name": "mys_f_1995",
+						"type": "String"
+					},
+					{
+						"name": "mys_f_1996",
+						"type": "String"
+					},
+					{
+						"name": "mys_f_1997",
+						"type": "String"
+					},
+					{
+						"name": "mys_f_1998",
+						"type": "String"
+					},
+					{
+						"name": "mys_f_1999",
+						"type": "String"
+					},
+					{
+						"name": "mys_f_2000",
+						"type": "String"
+					},
+					{
+						"name": "mys_f_2001",
+						"type": "String"
+					},
+					{
+						"name": "mys_f_2002",
+						"type": "String"
+					},
+					{
+						"name": "mys_f_2003",
+						"type": "String"
+					},
+					{
+						"name": "mys_f_2004",
+						"type": "String"
+					},
+					{
+						"name": "mys_f_2005",
+						"type": "String"
+					},
+					{
+						"name": "mys_f_2006",
+						"type": "String"
+					},
+					{
+						"name": "mys_f_2007",
+						"type": "String"
+					},
+					{
+						"name": "mys_f_2008",
+						"type": "String"
+					},
+					{
+						"name": "mys_f_2009",
+						"type": "String"
+					},
+					{
+						"name": "mys_f_2010",
+						"type": "String"
+					},
+					{
+						"name": "mys_f_2011",
+						"type": "String"
+					},
+					{
+						"name": "mys_f_2012",
+						"type": "String"
+					},
+					{
+						"name": "mys_f_2013",
+						"type": "String"
+					},
+					{
+						"name": "mys_f_2014",
+						"type": "String"
+					},
+					{
+						"name": "mys_f_2015",
+						"type": "String"
+					},
+					{
+						"name": "mys_f_2016",
+						"type": "String"
+					},
+					{
+						"name": "mys_f_2017",
+						"type": "String"
+					},
+					{
+						"name": "mys_f_2018",
+						"type": "String"
+					},
+					{
+						"name": "mys_f_2019",
+						"type": "String"
+					},
+					{
+						"name": "mys_f_2020",
+						"type": "String"
+					},
+					{
+						"name": "mys_f_2021",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_f_1990",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_f_1991",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_f_1992",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_f_1993",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_f_1994",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_f_1995",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_f_1996",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_f_1997",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_f_1998",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_f_1999",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_f_2000",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_f_2001",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_f_2002",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_f_2003",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_f_2004",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_f_2005",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_f_2006",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_f_2007",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_f_2008",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_f_2009",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_f_2010",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_f_2011",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_f_2012",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_f_2013",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_f_2014",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_f_2015",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_f_2016",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_f_2017",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_f_2018",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_f_2019",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_f_2020",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_f_2021",
+						"type": "String"
+					},
+					{
+						"name": "hdi_m_1990",
+						"type": "String"
+					},
+					{
+						"name": "hdi_m_1991",
+						"type": "String"
+					},
+					{
+						"name": "hdi_m_1992",
+						"type": "String"
+					},
+					{
+						"name": "hdi_m_1993",
+						"type": "String"
+					},
+					{
+						"name": "hdi_m_1994",
+						"type": "String"
+					},
+					{
+						"name": "hdi_m_1995",
+						"type": "String"
+					},
+					{
+						"name": "hdi_m_1996",
+						"type": "String"
+					},
+					{
+						"name": "hdi_m_1997",
+						"type": "String"
+					},
+					{
+						"name": "hdi_m_1998",
+						"type": "String"
+					},
+					{
+						"name": "hdi_m_1999",
+						"type": "String"
+					},
+					{
+						"name": "hdi_m_2000",
+						"type": "String"
+					},
+					{
+						"name": "hdi_m_2001",
+						"type": "String"
+					},
+					{
+						"name": "hdi_m_2002",
+						"type": "String"
+					},
+					{
+						"name": "hdi_m_2003",
+						"type": "String"
+					},
+					{
+						"name": "hdi_m_2004",
+						"type": "String"
+					},
+					{
+						"name": "hdi_m_2005",
+						"type": "String"
+					},
+					{
+						"name": "hdi_m_2006",
+						"type": "String"
+					},
+					{
+						"name": "hdi_m_2007",
+						"type": "String"
+					},
+					{
+						"name": "hdi_m_2008",
+						"type": "String"
+					},
+					{
+						"name": "hdi_m_2009",
+						"type": "String"
+					},
+					{
+						"name": "hdi_m_2010",
+						"type": "String"
+					},
+					{
+						"name": "hdi_m_2011",
+						"type": "String"
+					},
+					{
+						"name": "hdi_m_2012",
+						"type": "String"
+					},
+					{
+						"name": "hdi_m_2013",
+						"type": "String"
+					},
+					{
+						"name": "hdi_m_2014",
+						"type": "String"
+					},
+					{
+						"name": "hdi_m_2015",
+						"type": "String"
+					},
+					{
+						"name": "hdi_m_2016",
+						"type": "String"
+					},
+					{
+						"name": "hdi_m_2017",
+						"type": "String"
+					},
+					{
+						"name": "hdi_m_2018",
+						"type": "String"
+					},
+					{
+						"name": "hdi_m_2019",
+						"type": "String"
+					},
+					{
+						"name": "hdi_m_2020",
+						"type": "String"
+					},
+					{
+						"name": "hdi_m_2021",
+						"type": "String"
+					},
+					{
+						"name": "le_m_1990",
+						"type": "String"
+					},
+					{
+						"name": "le_m_1991",
+						"type": "String"
+					},
+					{
+						"name": "le_m_1992",
+						"type": "String"
+					},
+					{
+						"name": "le_m_1993",
+						"type": "String"
+					},
+					{
+						"name": "le_m_1994",
+						"type": "String"
+					},
+					{
+						"name": "le_m_1995",
+						"type": "String"
+					},
+					{
+						"name": "le_m_1996",
+						"type": "String"
+					},
+					{
+						"name": "le_m_1997",
+						"type": "String"
+					},
+					{
+						"name": "le_m_1998",
+						"type": "String"
+					},
+					{
+						"name": "le_m_1999",
+						"type": "String"
+					},
+					{
+						"name": "le_m_2000",
+						"type": "String"
+					},
+					{
+						"name": "le_m_2001",
+						"type": "String"
+					},
+					{
+						"name": "le_m_2002",
+						"type": "String"
+					},
+					{
+						"name": "le_m_2003",
+						"type": "String"
+					},
+					{
+						"name": "le_m_2004",
+						"type": "String"
+					},
+					{
+						"name": "le_m_2005",
+						"type": "String"
+					},
+					{
+						"name": "le_m_2006",
+						"type": "String"
+					},
+					{
+						"name": "le_m_2007",
+						"type": "String"
+					},
+					{
+						"name": "le_m_2008",
+						"type": "String"
+					},
+					{
+						"name": "le_m_2009",
+						"type": "String"
+					},
+					{
+						"name": "le_m_2010",
+						"type": "String"
+					},
+					{
+						"name": "le_m_2011",
+						"type": "String"
+					},
+					{
+						"name": "le_m_2012",
+						"type": "String"
+					},
+					{
+						"name": "le_m_2013",
+						"type": "String"
+					},
+					{
+						"name": "le_m_2014",
+						"type": "String"
+					},
+					{
+						"name": "le_m_2015",
+						"type": "String"
+					},
+					{
+						"name": "le_m_2016",
+						"type": "String"
+					},
+					{
+						"name": "le_m_2017",
+						"type": "String"
+					},
+					{
+						"name": "le_m_2018",
+						"type": "String"
+					},
+					{
+						"name": "le_m_2019",
+						"type": "String"
+					},
+					{
+						"name": "le_m_2020",
+						"type": "String"
+					},
+					{
+						"name": "le_m_2021",
+						"type": "String"
+					},
+					{
+						"name": "eys_m_1990",
+						"type": "String"
+					},
+					{
+						"name": "eys_m_1991",
+						"type": "String"
+					},
+					{
+						"name": "eys_m_1992",
+						"type": "String"
+					},
+					{
+						"name": "eys_m_1993",
+						"type": "String"
+					},
+					{
+						"name": "eys_m_1994",
+						"type": "String"
+					},
+					{
+						"name": "eys_m_1995",
+						"type": "String"
+					},
+					{
+						"name": "eys_m_1996",
+						"type": "String"
+					},
+					{
+						"name": "eys_m_1997",
+						"type": "String"
+					},
+					{
+						"name": "eys_m_1998",
+						"type": "String"
+					},
+					{
+						"name": "eys_m_1999",
+						"type": "String"
+					},
+					{
+						"name": "eys_m_2000",
+						"type": "String"
+					},
+					{
+						"name": "eys_m_2001",
+						"type": "String"
+					},
+					{
+						"name": "eys_m_2002",
+						"type": "String"
+					},
+					{
+						"name": "eys_m_2003",
+						"type": "String"
+					},
+					{
+						"name": "eys_m_2004",
+						"type": "String"
+					},
+					{
+						"name": "eys_m_2005",
+						"type": "String"
+					},
+					{
+						"name": "eys_m_2006",
+						"type": "String"
+					},
+					{
+						"name": "eys_m_2007",
+						"type": "String"
+					},
+					{
+						"name": "eys_m_2008",
+						"type": "String"
+					},
+					{
+						"name": "eys_m_2009",
+						"type": "String"
+					},
+					{
+						"name": "eys_m_2010",
+						"type": "String"
+					},
+					{
+						"name": "eys_m_2011",
+						"type": "String"
+					},
+					{
+						"name": "eys_m_2012",
+						"type": "String"
+					},
+					{
+						"name": "eys_m_2013",
+						"type": "String"
+					},
+					{
+						"name": "eys_m_2014",
+						"type": "String"
+					},
+					{
+						"name": "eys_m_2015",
+						"type": "String"
+					},
+					{
+						"name": "eys_m_2016",
+						"type": "String"
+					},
+					{
+						"name": "eys_m_2017",
+						"type": "String"
+					},
+					{
+						"name": "eys_m_2018",
+						"type": "String"
+					},
+					{
+						"name": "eys_m_2019",
+						"type": "String"
+					},
+					{
+						"name": "eys_m_2020",
+						"type": "String"
+					},
+					{
+						"name": "eys_m_2021",
+						"type": "String"
+					},
+					{
+						"name": "mys_m_1990",
+						"type": "String"
+					},
+					{
+						"name": "mys_m_1991",
+						"type": "String"
+					},
+					{
+						"name": "mys_m_1992",
+						"type": "String"
+					},
+					{
+						"name": "mys_m_1993",
+						"type": "String"
+					},
+					{
+						"name": "mys_m_1994",
+						"type": "String"
+					},
+					{
+						"name": "mys_m_1995",
+						"type": "String"
+					},
+					{
+						"name": "mys_m_1996",
+						"type": "String"
+					},
+					{
+						"name": "mys_m_1997",
+						"type": "String"
+					},
+					{
+						"name": "mys_m_1998",
+						"type": "String"
+					},
+					{
+						"name": "mys_m_1999",
+						"type": "String"
+					},
+					{
+						"name": "mys_m_2000",
+						"type": "String"
+					},
+					{
+						"name": "mys_m_2001",
+						"type": "String"
+					},
+					{
+						"name": "mys_m_2002",
+						"type": "String"
+					},
+					{
+						"name": "mys_m_2003",
+						"type": "String"
+					},
+					{
+						"name": "mys_m_2004",
+						"type": "String"
+					},
+					{
+						"name": "mys_m_2005",
+						"type": "String"
+					},
+					{
+						"name": "mys_m_2006",
+						"type": "String"
+					},
+					{
+						"name": "mys_m_2007",
+						"type": "String"
+					},
+					{
+						"name": "mys_m_2008",
+						"type": "String"
+					},
+					{
+						"name": "mys_m_2009",
+						"type": "String"
+					},
+					{
+						"name": "mys_m_2010",
+						"type": "String"
+					},
+					{
+						"name": "mys_m_2011",
+						"type": "String"
+					},
+					{
+						"name": "mys_m_2012",
+						"type": "String"
+					},
+					{
+						"name": "mys_m_2013",
+						"type": "String"
+					},
+					{
+						"name": "mys_m_2014",
+						"type": "String"
+					},
+					{
+						"name": "mys_m_2015",
+						"type": "String"
+					},
+					{
+						"name": "mys_m_2016",
+						"type": "String"
+					},
+					{
+						"name": "mys_m_2017",
+						"type": "String"
+					},
+					{
+						"name": "mys_m_2018",
+						"type": "String"
+					},
+					{
+						"name": "mys_m_2019",
+						"type": "String"
+					},
+					{
+						"name": "mys_m_2020",
+						"type": "String"
+					},
+					{
+						"name": "mys_m_2021",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_m_1990",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_m_1991",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_m_1992",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_m_1993",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_m_1994",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_m_1995",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_m_1996",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_m_1997",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_m_1998",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_m_1999",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_m_2000",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_m_2001",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_m_2002",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_m_2003",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_m_2004",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_m_2005",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_m_2006",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_m_2007",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_m_2008",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_m_2009",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_m_2010",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_m_2011",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_m_2012",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_m_2013",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_m_2014",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_m_2015",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_m_2016",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_m_2017",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_m_2018",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_m_2019",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_m_2020",
+						"type": "String"
+					},
+					{
+						"name": "gni_pc_m_2021",
+						"type": "String"
+					},
+					{
+						"name": "ihdi_2010",
+						"type": "String"
+					},
+					{
+						"name": "ihdi_2011",
+						"type": "String"
+					},
+					{
+						"name": "ihdi_2012",
+						"type": "String"
+					},
+					{
+						"name": "ihdi_2013",
+						"type": "String"
+					},
+					{
+						"name": "ihdi_2014",
+						"type": "String"
+					},
+					{
+						"name": "ihdi_2015",
+						"type": "String"
+					},
+					{
+						"name": "ihdi_2016",
+						"type": "String"
+					},
+					{
+						"name": "ihdi_2017",
+						"type": "String"
+					},
+					{
+						"name": "ihdi_2018",
+						"type": "String"
+					},
+					{
+						"name": "ihdi_2019",
+						"type": "String"
+					},
+					{
+						"name": "ihdi_2020",
+						"type": "String"
+					},
+					{
+						"name": "ihdi_2021",
+						"type": "String"
+					},
+					{
+						"name": "coef_ineq_2010",
+						"type": "String"
+					},
+					{
+						"name": "coef_ineq_2011",
+						"type": "String"
+					},
+					{
+						"name": "coef_ineq_2012",
+						"type": "String"
+					},
+					{
+						"name": "coef_ineq_2013",
+						"type": "String"
+					},
+					{
+						"name": "coef_ineq_2014",
+						"type": "String"
+					},
+					{
+						"name": "coef_ineq_2015",
+						"type": "String"
+					},
+					{
+						"name": "coef_ineq_2016",
+						"type": "String"
+					},
+					{
+						"name": "coef_ineq_2017",
+						"type": "String"
+					},
+					{
+						"name": "coef_ineq_2018",
+						"type": "String"
+					},
+					{
+						"name": "coef_ineq_2019",
+						"type": "String"
+					},
+					{
+						"name": "coef_ineq_2020",
+						"type": "String"
+					},
+					{
+						"name": "coef_ineq_2021",
+						"type": "String"
+					},
+					{
+						"name": "loss_2010",
+						"type": "String"
+					},
+					{
+						"name": "loss_2011",
+						"type": "String"
+					},
+					{
+						"name": "loss_2012",
+						"type": "String"
+					},
+					{
+						"name": "loss_2013",
+						"type": "String"
+					},
+					{
+						"name": "loss_2014",
+						"type": "String"
+					},
+					{
+						"name": "loss_2015",
+						"type": "String"
+					},
+					{
+						"name": "loss_2016",
+						"type": "String"
+					},
+					{
+						"name": "loss_2017",
+						"type": "String"
+					},
+					{
+						"name": "loss_2018",
+						"type": "String"
+					},
+					{
+						"name": "loss_2019",
+						"type": "String"
+					},
+					{
+						"name": "loss_2020",
+						"type": "String"
+					},
+					{
+						"name": "loss_2021",
+						"type": "String"
+					},
+					{
+						"name": "ineq_le_2010",
+						"type": "String"
+					},
+					{
+						"name": "ineq_le_2011",
+						"type": "String"
+					},
+					{
+						"name": "ineq_le_2012",
+						"type": "String"
+					},
+					{
+						"name": "ineq_le_2013",
+						"type": "String"
+					},
+					{
+						"name": "ineq_le_2014",
+						"type": "String"
+					},
+					{
+						"name": "ineq_le_2015",
+						"type": "String"
+					},
+					{
+						"name": "ineq_le_2016",
+						"type": "String"
+					},
+					{
+						"name": "ineq_le_2017",
+						"type": "String"
+					},
+					{
+						"name": "ineq_le_2018",
+						"type": "String"
+					},
+					{
+						"name": "ineq_le_2019",
+						"type": "String"
+					},
+					{
+						"name": "ineq_le_2020",
+						"type": "String"
+					},
+					{
+						"name": "ineq_le_2021",
+						"type": "String"
+					},
+					{
+						"name": "ineq_edu_2010",
+						"type": "String"
+					},
+					{
+						"name": "ineq_edu_2011",
+						"type": "String"
+					},
+					{
+						"name": "ineq_edu_2012",
+						"type": "String"
+					},
+					{
+						"name": "ineq_edu_2013",
+						"type": "String"
+					},
+					{
+						"name": "ineq_edu_2014",
+						"type": "String"
+					},
+					{
+						"name": "ineq_edu_2015",
+						"type": "String"
+					},
+					{
+						"name": "ineq_edu_2016",
+						"type": "String"
+					},
+					{
+						"name": "ineq_edu_2017",
+						"type": "String"
+					},
+					{
+						"name": "ineq_edu_2018",
+						"type": "String"
+					},
+					{
+						"name": "ineq_edu_2019",
+						"type": "String"
+					},
+					{
+						"name": "ineq_edu_2020",
+						"type": "String"
+					},
+					{
+						"name": "ineq_edu_2021",
+						"type": "String"
+					},
+					{
+						"name": "ineq_inc_2010",
+						"type": "String"
+					},
+					{
+						"name": "ineq_inc_2011",
+						"type": "String"
+					},
+					{
+						"name": "ineq_inc_2012",
+						"type": "String"
+					},
+					{
+						"name": "ineq_inc_2013",
+						"type": "String"
+					},
+					{
+						"name": "ineq_inc_2014",
+						"type": "String"
+					},
+					{
+						"name": "ineq_inc_2015",
+						"type": "String"
+					},
+					{
+						"name": "ineq_inc_2016",
+						"type": "String"
+					},
+					{
+						"name": "ineq_inc_2017",
+						"type": "String"
+					},
+					{
+						"name": "ineq_inc_2018",
+						"type": "String"
+					},
+					{
+						"name": "ineq_inc_2019",
+						"type": "String"
+					},
+					{
+						"name": "ineq_inc_2020",
+						"type": "String"
+					},
+					{
+						"name": "ineq_inc_2021",
+						"type": "String"
+					},
+					{
+						"name": "gii_rank_2021",
+						"type": "String"
+					},
+					{
+						"name": "gii_1990",
+						"type": "String"
+					},
+					{
+						"name": "gii_1991",
+						"type": "String"
+					},
+					{
+						"name": "gii_1992",
+						"type": "String"
+					},
+					{
+						"name": "gii_1993",
+						"type": "String"
+					},
+					{
+						"name": "gii_1994",
+						"type": "String"
+					},
+					{
+						"name": "gii_1995",
+						"type": "String"
+					},
+					{
+						"name": "gii_1996",
+						"type": "String"
+					},
+					{
+						"name": "gii_1997",
+						"type": "String"
+					},
+					{
+						"name": "gii_1998",
+						"type": "String"
+					},
+					{
+						"name": "gii_1999",
+						"type": "String"
+					},
+					{
+						"name": "gii_2000",
+						"type": "String"
+					},
+					{
+						"name": "gii_2001",
+						"type": "String"
+					},
+					{
+						"name": "gii_2002",
+						"type": "String"
+					},
+					{
+						"name": "gii_2003",
+						"type": "String"
+					},
+					{
+						"name": "gii_2004",
+						"type": "String"
+					},
+					{
+						"name": "gii_2005",
+						"type": "String"
+					},
+					{
+						"name": "gii_2006",
+						"type": "String"
+					},
+					{
+						"name": "gii_2007",
+						"type": "String"
+					},
+					{
+						"name": "gii_2008",
+						"type": "String"
+					},
+					{
+						"name": "gii_2009",
+						"type": "String"
+					},
+					{
+						"name": "gii_2010",
+						"type": "String"
+					},
+					{
+						"name": "gii_2011",
+						"type": "String"
+					},
+					{
+						"name": "gii_2012",
+						"type": "String"
+					},
+					{
+						"name": "gii_2013",
+						"type": "String"
+					},
+					{
+						"name": "gii_2014",
+						"type": "String"
+					},
+					{
+						"name": "gii_2015",
+						"type": "String"
+					},
+					{
+						"name": "gii_2016",
+						"type": "String"
+					},
+					{
+						"name": "gii_2017",
+						"type": "String"
+					},
+					{
+						"name": "gii_2018",
+						"type": "String"
+					},
+					{
+						"name": "gii_2019",
+						"type": "String"
+					},
+					{
+						"name": "gii_2020",
+						"type": "String"
+					},
+					{
+						"name": "gii_2021",
+						"type": "String"
+					},
+					{
+						"name": "mmr_1990",
+						"type": "String"
+					},
+					{
+						"name": "mmr_1991",
+						"type": "String"
+					},
+					{
+						"name": "mmr_1992",
+						"type": "String"
+					},
+					{
+						"name": "mmr_1993",
+						"type": "String"
+					},
+					{
+						"name": "mmr_1994",
+						"type": "String"
+					},
+					{
+						"name": "mmr_1995",
+						"type": "String"
+					},
+					{
+						"name": "mmr_1996",
+						"type": "String"
+					},
+					{
+						"name": "mmr_1997",
+						"type": "String"
+					},
+					{
+						"name": "mmr_1998",
+						"type": "String"
+					},
+					{
+						"name": "mmr_1999",
+						"type": "String"
+					},
+					{
+						"name": "mmr_2000",
+						"type": "String"
+					},
+					{
+						"name": "mmr_2001",
+						"type": "String"
+					},
+					{
+						"name": "mmr_2002",
+						"type": "String"
+					},
+					{
+						"name": "mmr_2003",
+						"type": "String"
+					},
+					{
+						"name": "mmr_2004",
+						"type": "String"
+					},
+					{
+						"name": "mmr_2005",
+						"type": "String"
+					},
+					{
+						"name": "mmr_2006",
+						"type": "String"
+					},
+					{
+						"name": "mmr_2007",
+						"type": "String"
+					},
+					{
+						"name": "mmr_2008",
+						"type": "String"
+					},
+					{
+						"name": "mmr_2009",
+						"type": "String"
+					},
+					{
+						"name": "mmr_2010",
+						"type": "String"
+					},
+					{
+						"name": "mmr_2011",
+						"type": "String"
+					},
+					{
+						"name": "mmr_2012",
+						"type": "String"
+					},
+					{
+						"name": "mmr_2013",
+						"type": "String"
+					},
+					{
+						"name": "mmr_2014",
+						"type": "String"
+					},
+					{
+						"name": "mmr_2015",
+						"type": "String"
+					},
+					{
+						"name": "mmr_2016",
+						"type": "String"
+					},
+					{
+						"name": "mmr_2017",
+						"type": "String"
+					},
+					{
+						"name": "mmr_2018",
+						"type": "String"
+					},
+					{
+						"name": "mmr_2019",
+						"type": "String"
+					},
+					{
+						"name": "mmr_2020",
+						"type": "String"
+					},
+					{
+						"name": "mmr_2021",
+						"type": "String"
+					},
+					{
+						"name": "abr_1990",
+						"type": "String"
+					},
+					{
+						"name": "abr_1991",
+						"type": "String"
+					},
+					{
+						"name": "abr_1992",
+						"type": "String"
+					},
+					{
+						"name": "abr_1993",
+						"type": "String"
+					},
+					{
+						"name": "abr_1994",
+						"type": "String"
+					},
+					{
+						"name": "abr_1995",
+						"type": "String"
+					},
+					{
+						"name": "abr_1996",
+						"type": "String"
+					},
+					{
+						"name": "abr_1997",
+						"type": "String"
+					},
+					{
+						"name": "abr_1998",
+						"type": "String"
+					},
+					{
+						"name": "abr_1999",
+						"type": "String"
+					},
+					{
+						"name": "abr_2000",
+						"type": "String"
+					},
+					{
+						"name": "abr_2001",
+						"type": "String"
+					},
+					{
+						"name": "abr_2002",
+						"type": "String"
+					},
+					{
+						"name": "abr_2003",
+						"type": "String"
+					},
+					{
+						"name": "abr_2004",
+						"type": "String"
+					},
+					{
+						"name": "abr_2005",
+						"type": "String"
+					},
+					{
+						"name": "abr_2006",
+						"type": "String"
+					},
+					{
+						"name": "abr_2007",
+						"type": "String"
+					},
+					{
+						"name": "abr_2008",
+						"type": "String"
+					},
+					{
+						"name": "abr_2009",
+						"type": "String"
+					},
+					{
+						"name": "abr_2010",
+						"type": "String"
+					},
+					{
+						"name": "abr_2011",
+						"type": "String"
+					},
+					{
+						"name": "abr_2012",
+						"type": "String"
+					},
+					{
+						"name": "abr_2013",
+						"type": "String"
+					},
+					{
+						"name": "abr_2014",
+						"type": "String"
+					},
+					{
+						"name": "abr_2015",
+						"type": "String"
+					},
+					{
+						"name": "abr_2016",
+						"type": "String"
+					},
+					{
+						"name": "abr_2017",
+						"type": "String"
+					},
+					{
+						"name": "abr_2018",
+						"type": "String"
+					},
+					{
+						"name": "abr_2019",
+						"type": "String"
+					},
+					{
+						"name": "abr_2020",
+						"type": "String"
+					},
+					{
+						"name": "abr_2021",
+						"type": "String"
+					},
+					{
+						"name": "se_f_1990",
+						"type": "String"
+					},
+					{
+						"name": "se_f_1991",
+						"type": "String"
+					},
+					{
+						"name": "se_f_1992",
+						"type": "String"
+					},
+					{
+						"name": "se_f_1993",
+						"type": "String"
+					},
+					{
+						"name": "se_f_1994",
+						"type": "String"
+					},
+					{
+						"name": "se_f_1995",
+						"type": "String"
+					},
+					{
+						"name": "se_f_1996",
+						"type": "String"
+					},
+					{
+						"name": "se_f_1997",
+						"type": "String"
+					},
+					{
+						"name": "se_f_1998",
+						"type": "String"
+					},
+					{
+						"name": "se_f_1999",
+						"type": "String"
+					},
+					{
+						"name": "se_f_2000",
+						"type": "String"
+					},
+					{
+						"name": "se_f_2001",
+						"type": "String"
+					},
+					{
+						"name": "se_f_2002",
+						"type": "String"
+					},
+					{
+						"name": "se_f_2003",
+						"type": "String"
+					},
+					{
+						"name": "se_f_2004",
+						"type": "String"
+					},
+					{
+						"name": "se_f_2005",
+						"type": "String"
+					},
+					{
+						"name": "se_f_2006",
+						"type": "String"
+					},
+					{
+						"name": "se_f_2007",
+						"type": "String"
+					},
+					{
+						"name": "se_f_2008",
+						"type": "String"
+					},
+					{
+						"name": "se_f_2009",
+						"type": "String"
+					},
+					{
+						"name": "se_f_2010",
+						"type": "String"
+					},
+					{
+						"name": "se_f_2011",
+						"type": "String"
+					},
+					{
+						"name": "se_f_2012",
+						"type": "String"
+					},
+					{
+						"name": "se_f_2013",
+						"type": "String"
+					},
+					{
+						"name": "se_f_2014",
+						"type": "String"
+					},
+					{
+						"name": "se_f_2015",
+						"type": "String"
+					},
+					{
+						"name": "se_f_2016",
+						"type": "String"
+					},
+					{
+						"name": "se_f_2017",
+						"type": "String"
+					},
+					{
+						"name": "se_f_2018",
+						"type": "String"
+					},
+					{
+						"name": "se_f_2019",
+						"type": "String"
+					},
+					{
+						"name": "se_f_2020",
+						"type": "String"
+					},
+					{
+						"name": "se_f_2021",
+						"type": "String"
+					},
+					{
+						"name": "se_m_1990",
+						"type": "String"
+					},
+					{
+						"name": "se_m_1991",
+						"type": "String"
+					},
+					{
+						"name": "se_m_1992",
+						"type": "String"
+					},
+					{
+						"name": "se_m_1993",
+						"type": "String"
+					},
+					{
+						"name": "se_m_1994",
+						"type": "String"
+					},
+					{
+						"name": "se_m_1995",
+						"type": "String"
+					},
+					{
+						"name": "se_m_1996",
+						"type": "String"
+					},
+					{
+						"name": "se_m_1997",
+						"type": "String"
+					},
+					{
+						"name": "se_m_1998",
+						"type": "String"
+					},
+					{
+						"name": "se_m_1999",
+						"type": "String"
+					},
+					{
+						"name": "se_m_2000",
+						"type": "String"
+					},
+					{
+						"name": "se_m_2001",
+						"type": "String"
+					},
+					{
+						"name": "se_m_2002",
+						"type": "String"
+					},
+					{
+						"name": "se_m_2003",
+						"type": "String"
+					},
+					{
+						"name": "se_m_2004",
+						"type": "String"
+					},
+					{
+						"name": "se_m_2005",
+						"type": "String"
+					},
+					{
+						"name": "se_m_2006",
+						"type": "String"
+					},
+					{
+						"name": "se_m_2007",
+						"type": "String"
+					},
+					{
+						"name": "se_m_2008",
+						"type": "String"
+					},
+					{
+						"name": "se_m_2009",
+						"type": "String"
+					},
+					{
+						"name": "se_m_2010",
+						"type": "String"
+					},
+					{
+						"name": "se_m_2011",
+						"type": "String"
+					},
+					{
+						"name": "se_m_2012",
+						"type": "String"
+					},
+					{
+						"name": "se_m_2013",
+						"type": "String"
+					},
+					{
+						"name": "se_m_2014",
+						"type": "String"
+					},
+					{
+						"name": "se_m_2015",
+						"type": "String"
+					},
+					{
+						"name": "se_m_2016",
+						"type": "String"
+					},
+					{
+						"name": "se_m_2017",
+						"type": "String"
+					},
+					{
+						"name": "se_m_2018",
+						"type": "String"
+					},
+					{
+						"name": "se_m_2019",
+						"type": "String"
+					},
+					{
+						"name": "se_m_2020",
+						"type": "String"
+					},
+					{
+						"name": "se_m_2021",
+						"type": "String"
+					},
+					{
+						"name": "pr_f_1990",
+						"type": "String"
+					},
+					{
+						"name": "pr_f_1991",
+						"type": "String"
+					},
+					{
+						"name": "pr_f_1992",
+						"type": "String"
+					},
+					{
+						"name": "pr_f_1993",
+						"type": "String"
+					},
+					{
+						"name": "pr_f_1994",
+						"type": "String"
+					},
+					{
+						"name": "pr_f_1995",
+						"type": "String"
+					},
+					{
+						"name": "pr_f_1996",
+						"type": "String"
+					},
+					{
+						"name": "pr_f_1997",
+						"type": "String"
+					},
+					{
+						"name": "pr_f_1998",
+						"type": "String"
+					},
+					{
+						"name": "pr_f_1999",
+						"type": "String"
+					},
+					{
+						"name": "pr_f_2000",
+						"type": "String"
+					},
+					{
+						"name": "pr_f_2001",
+						"type": "String"
+					},
+					{
+						"name": "pr_f_2002",
+						"type": "String"
+					},
+					{
+						"name": "pr_f_2003",
+						"type": "String"
+					},
+					{
+						"name": "pr_f_2004",
+						"type": "String"
+					},
+					{
+						"name": "pr_f_2005",
+						"type": "String"
+					},
+					{
+						"name": "pr_f_2006",
+						"type": "String"
+					},
+					{
+						"name": "pr_f_2007",
+						"type": "String"
+					},
+					{
+						"name": "pr_f_2008",
+						"type": "String"
+					},
+					{
+						"name": "pr_f_2009",
+						"type": "String"
+					},
+					{
+						"name": "pr_f_2010",
+						"type": "String"
+					},
+					{
+						"name": "pr_f_2011",
+						"type": "String"
+					},
+					{
+						"name": "pr_f_2012",
+						"type": "String"
+					},
+					{
+						"name": "pr_f_2013",
+						"type": "String"
+					},
+					{
+						"name": "pr_f_2014",
+						"type": "String"
+					},
+					{
+						"name": "pr_f_2015",
+						"type": "String"
+					},
+					{
+						"name": "pr_f_2016",
+						"type": "String"
+					},
+					{
+						"name": "pr_f_2017",
+						"type": "String"
+					},
+					{
+						"name": "pr_f_2018",
+						"type": "String"
+					},
+					{
+						"name": "pr_f_2019",
+						"type": "String"
+					},
+					{
+						"name": "pr_f_2020",
+						"type": "String"
+					},
+					{
+						"name": "pr_f_2021",
+						"type": "String"
+					},
+					{
+						"name": "pr_m_1990",
+						"type": "String"
+					},
+					{
+						"name": "pr_m_1991",
+						"type": "String"
+					},
+					{
+						"name": "pr_m_1992",
+						"type": "String"
+					},
+					{
+						"name": "pr_m_1993",
+						"type": "String"
+					},
+					{
+						"name": "pr_m_1994",
+						"type": "String"
+					},
+					{
+						"name": "pr_m_1995",
+						"type": "String"
+					},
+					{
+						"name": "pr_m_1996",
+						"type": "String"
+					},
+					{
+						"name": "pr_m_1997",
+						"type": "String"
+					},
+					{
+						"name": "pr_m_1998",
+						"type": "String"
+					},
+					{
+						"name": "pr_m_1999",
+						"type": "String"
+					},
+					{
+						"name": "pr_m_2000",
+						"type": "String"
+					},
+					{
+						"name": "pr_m_2001",
+						"type": "String"
+					},
+					{
+						"name": "pr_m_2002",
+						"type": "String"
+					},
+					{
+						"name": "pr_m_2003",
+						"type": "String"
+					},
+					{
+						"name": "pr_m_2004",
+						"type": "String"
+					},
+					{
+						"name": "pr_m_2005",
+						"type": "String"
+					},
+					{
+						"name": "pr_m_2006",
+						"type": "String"
+					},
+					{
+						"name": "pr_m_2007",
+						"type": "String"
+					},
+					{
+						"name": "pr_m_2008",
+						"type": "String"
+					},
+					{
+						"name": "pr_m_2009",
+						"type": "String"
+					},
+					{
+						"name": "pr_m_2010",
+						"type": "String"
+					},
+					{
+						"name": "pr_m_2011",
+						"type": "String"
+					},
+					{
+						"name": "pr_m_2012",
+						"type": "String"
+					},
+					{
+						"name": "pr_m_2013",
+						"type": "String"
+					},
+					{
+						"name": "pr_m_2014",
+						"type": "String"
+					},
+					{
+						"name": "pr_m_2015",
+						"type": "String"
+					},
+					{
+						"name": "pr_m_2016",
+						"type": "String"
+					},
+					{
+						"name": "pr_m_2017",
+						"type": "String"
+					},
+					{
+						"name": "pr_m_2018",
+						"type": "String"
+					},
+					{
+						"name": "pr_m_2019",
+						"type": "String"
+					},
+					{
+						"name": "pr_m_2020",
+						"type": "String"
+					},
+					{
+						"name": "pr_m_2021",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_f_1990",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_f_1991",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_f_1992",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_f_1993",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_f_1994",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_f_1995",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_f_1996",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_f_1997",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_f_1998",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_f_1999",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_f_2000",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_f_2001",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_f_2002",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_f_2003",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_f_2004",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_f_2005",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_f_2006",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_f_2007",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_f_2008",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_f_2009",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_f_2010",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_f_2011",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_f_2012",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_f_2013",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_f_2014",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_f_2015",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_f_2016",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_f_2017",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_f_2018",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_f_2019",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_f_2020",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_f_2021",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_m_1990",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_m_1991",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_m_1992",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_m_1993",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_m_1994",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_m_1995",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_m_1996",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_m_1997",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_m_1998",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_m_1999",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_m_2000",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_m_2001",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_m_2002",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_m_2003",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_m_2004",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_m_2005",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_m_2006",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_m_2007",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_m_2008",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_m_2009",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_m_2010",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_m_2011",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_m_2012",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_m_2013",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_m_2014",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_m_2015",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_m_2016",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_m_2017",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_m_2018",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_m_2019",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_m_2020",
+						"type": "String"
+					},
+					{
+						"name": "lfpr_m_2021",
+						"type": "String"
+					},
+					{
+						"name": "rankdiff_hdi_phdi_2021",
+						"type": "String"
+					},
+					{
+						"name": "phdi_1990",
+						"type": "String"
+					},
+					{
+						"name": "phdi_1991",
+						"type": "String"
+					},
+					{
+						"name": "phdi_1992",
+						"type": "String"
+					},
+					{
+						"name": "phdi_1993",
+						"type": "String"
+					},
+					{
+						"name": "phdi_1994",
+						"type": "String"
+					},
+					{
+						"name": "phdi_1995",
+						"type": "String"
+					},
+					{
+						"name": "phdi_1996",
+						"type": "String"
+					},
+					{
+						"name": "phdi_1997",
+						"type": "String"
+					},
+					{
+						"name": "phdi_1998",
+						"type": "String"
+					},
+					{
+						"name": "phdi_1999",
+						"type": "String"
+					},
+					{
+						"name": "phdi_2000",
+						"type": "String"
+					},
+					{
+						"name": "phdi_2001",
+						"type": "String"
+					},
+					{
+						"name": "phdi_2002",
+						"type": "String"
+					},
+					{
+						"name": "phdi_2003",
+						"type": "String"
+					},
+					{
+						"name": "phdi_2004",
+						"type": "String"
+					},
+					{
+						"name": "phdi_2005",
+						"type": "String"
+					},
+					{
+						"name": "phdi_2006",
+						"type": "String"
+					},
+					{
+						"name": "phdi_2007",
+						"type": "String"
+					},
+					{
+						"name": "phdi_2008",
+						"type": "String"
+					},
+					{
+						"name": "phdi_2009",
+						"type": "String"
+					},
+					{
+						"name": "phdi_2010",
+						"type": "String"
+					},
+					{
+						"name": "phdi_2011",
+						"type": "String"
+					},
+					{
+						"name": "phdi_2012",
+						"type": "String"
+					},
+					{
+						"name": "phdi_2013",
+						"type": "String"
+					},
+					{
+						"name": "phdi_2014",
+						"type": "String"
+					},
+					{
+						"name": "phdi_2015",
+						"type": "String"
+					},
+					{
+						"name": "phdi_2016",
+						"type": "String"
+					},
+					{
+						"name": "phdi_2017",
+						"type": "String"
+					},
+					{
+						"name": "phdi_2018",
+						"type": "String"
+					},
+					{
+						"name": "phdi_2019",
+						"type": "String"
+					},
+					{
+						"name": "phdi_2020",
+						"type": "String"
+					},
+					{
+						"name": "phdi_2021",
+						"type": "String"
+					},
+					{
+						"name": "diff_hdi_phdi_1990",
+						"type": "String"
+					},
+					{
+						"name": "diff_hdi_phdi_1991",
+						"type": "String"
+					},
+					{
+						"name": "diff_hdi_phdi_1992",
+						"type": "String"
+					},
+					{
+						"name": "diff_hdi_phdi_1993",
+						"type": "String"
+					},
+					{
+						"name": "diff_hdi_phdi_1994",
+						"type": "String"
+					},
+					{
+						"name": "diff_hdi_phdi_1995",
+						"type": "String"
+					},
+					{
+						"name": "diff_hdi_phdi_1996",
+						"type": "String"
+					},
+					{
+						"name": "diff_hdi_phdi_1997",
+						"type": "String"
+					},
+					{
+						"name": "diff_hdi_phdi_1998",
+						"type": "String"
+					},
+					{
+						"name": "diff_hdi_phdi_1999",
+						"type": "String"
+					},
+					{
+						"name": "diff_hdi_phdi_2000",
+						"type": "String"
+					},
+					{
+						"name": "diff_hdi_phdi_2001",
+						"type": "String"
+					},
+					{
+						"name": "diff_hdi_phdi_2002",
+						"type": "String"
+					},
+					{
+						"name": "diff_hdi_phdi_2003",
+						"type": "String"
+					},
+					{
+						"name": "diff_hdi_phdi_2004",
+						"type": "String"
+					},
+					{
+						"name": "diff_hdi_phdi_2005",
+						"type": "String"
+					},
+					{
+						"name": "diff_hdi_phdi_2006",
+						"type": "String"
+					},
+					{
+						"name": "diff_hdi_phdi_2007",
+						"type": "String"
+					},
+					{
+						"name": "diff_hdi_phdi_2008",
+						"type": "String"
+					},
+					{
+						"name": "diff_hdi_phdi_2009",
+						"type": "String"
+					},
+					{
+						"name": "diff_hdi_phdi_2010",
+						"type": "String"
+					},
+					{
+						"name": "diff_hdi_phdi_2011",
+						"type": "String"
+					},
+					{
+						"name": "diff_hdi_phdi_2012",
+						"type": "String"
+					},
+					{
+						"name": "diff_hdi_phdi_2013",
+						"type": "String"
+					},
+					{
+						"name": "diff_hdi_phdi_2014",
+						"type": "String"
+					},
+					{
+						"name": "diff_hdi_phdi_2015",
+						"type": "String"
+					},
+					{
+						"name": "diff_hdi_phdi_2016",
+						"type": "String"
+					},
+					{
+						"name": "diff_hdi_phdi_2017",
+						"type": "String"
+					},
+					{
+						"name": "diff_hdi_phdi_2018",
+						"type": "String"
+					},
+					{
+						"name": "diff_hdi_phdi_2019",
+						"type": "String"
+					},
+					{
+						"name": "diff_hdi_phdi_2020",
+						"type": "String"
+					},
+					{
+						"name": "diff_hdi_phdi_2021",
+						"type": "String"
+					},
+					{
+						"name": "co2_prod_1990",
+						"type": "String"
+					},
+					{
+						"name": "co2_prod_1991",
+						"type": "String"
+					},
+					{
+						"name": "co2_prod_1992",
+						"type": "String"
+					},
+					{
+						"name": "co2_prod_1993",
+						"type": "String"
+					},
+					{
+						"name": "co2_prod_1994",
+						"type": "String"
+					},
+					{
+						"name": "co2_prod_1995",
+						"type": "String"
+					},
+					{
+						"name": "co2_prod_1996",
+						"type": "String"
+					},
+					{
+						"name": "co2_prod_1997",
+						"type": "String"
+					},
+					{
+						"name": "co2_prod_1998",
+						"type": "String"
+					},
+					{
+						"name": "co2_prod_1999",
+						"type": "String"
+					},
+					{
+						"name": "co2_prod_2000",
+						"type": "String"
+					},
+					{
+						"name": "co2_prod_2001",
+						"type": "String"
+					},
+					{
+						"name": "co2_prod_2002",
+						"type": "String"
+					},
+					{
+						"name": "co2_prod_2003",
+						"type": "String"
+					},
+					{
+						"name": "co2_prod_2004",
+						"type": "String"
+					},
+					{
+						"name": "co2_prod_2005",
+						"type": "String"
+					},
+					{
+						"name": "co2_prod_2006",
+						"type": "String"
+					},
+					{
+						"name": "co2_prod_2007",
+						"type": "String"
+					},
+					{
+						"name": "co2_prod_2008",
+						"type": "String"
+					},
+					{
+						"name": "co2_prod_2009",
+						"type": "String"
+					},
+					{
+						"name": "co2_prod_2010",
+						"type": "String"
+					},
+					{
+						"name": "co2_prod_2011",
+						"type": "String"
+					},
+					{
+						"name": "co2_prod_2012",
+						"type": "String"
+					},
+					{
+						"name": "co2_prod_2013",
+						"type": "String"
+					},
+					{
+						"name": "co2_prod_2014",
+						"type": "String"
+					},
+					{
+						"name": "co2_prod_2015",
+						"type": "String"
+					},
+					{
+						"name": "co2_prod_2016",
+						"type": "String"
+					},
+					{
+						"name": "co2_prod_2017",
+						"type": "String"
+					},
+					{
+						"name": "co2_prod_2018",
+						"type": "String"
+					},
+					{
+						"name": "co2_prod_2019",
+						"type": "String"
+					},
+					{
+						"name": "co2_prod_2020",
+						"type": "String"
+					},
+					{
+						"name": "co2_prod_2021",
+						"type": "String"
+					},
+					{
+						"name": "mf_1990",
+						"type": "String"
+					},
+					{
+						"name": "mf_1991",
+						"type": "String"
+					},
+					{
+						"name": "mf_1992",
+						"type": "String"
+					},
+					{
+						"name": "mf_1993",
+						"type": "String"
+					},
+					{
+						"name": "mf_1994",
+						"type": "String"
+					},
+					{
+						"name": "mf_1995",
+						"type": "String"
+					},
+					{
+						"name": "mf_1996",
+						"type": "String"
+					},
+					{
+						"name": "mf_1997",
+						"type": "String"
+					},
+					{
+						"name": "mf_1998",
+						"type": "String"
+					},
+					{
+						"name": "mf_1999",
+						"type": "String"
+					},
+					{
+						"name": "mf_2000",
+						"type": "String"
+					},
+					{
+						"name": "mf_2001",
+						"type": "String"
+					},
+					{
+						"name": "mf_2002",
+						"type": "String"
+					},
+					{
+						"name": "mf_2003",
+						"type": "String"
+					},
+					{
+						"name": "mf_2004",
+						"type": "String"
+					},
+					{
+						"name": "mf_2005",
+						"type": "String"
+					},
+					{
+						"name": "mf_2006",
+						"type": "String"
+					},
+					{
+						"name": "mf_2007",
+						"type": "String"
+					},
+					{
+						"name": "mf_2008",
+						"type": "String"
+					},
+					{
+						"name": "mf_2009",
+						"type": "String"
+					},
+					{
+						"name": "mf_2010",
+						"type": "String"
+					},
+					{
+						"name": "mf_2011",
+						"type": "String"
+					},
+					{
+						"name": "mf_2012",
+						"type": "String"
+					},
+					{
+						"name": "mf_2013",
+						"type": "String"
+					},
+					{
+						"name": "mf_2014",
+						"type": "String"
+					},
+					{
+						"name": "mf_2015",
+						"type": "String"
+					},
+					{
+						"name": "mf_2016",
+						"type": "String"
+					},
+					{
+						"name": "mf_2017",
+						"type": "String"
+					},
+					{
+						"name": "mf_2018",
+						"type": "String"
+					},
+					{
+						"name": "mf_2019",
+						"type": "String"
+					},
+					{
+						"name": "mf_2020",
+						"type": "String"
+					},
+					{
+						"name": "mf_2021",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/FileLocation')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/world_indicators_data_dictionary')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "FileLocation",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "FileServerLocation",
+						"fileName": "world_indicators_data_dictionary.csv"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "Table",
+						"type": "String"
+					},
+					{
+						"name": "Field",
+						"type": "String"
+					},
+					{
+						"name": "Description",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/FileLocation')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/worldbank')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "FileLocation",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Excel",
+				"typeProperties": {
+					"sheetName": "Development Indicators",
+					"location": {
+						"type": "FileServerLocation",
+						"fileName": "WorldBank.xlsx"
+					},
+					"firstRowAsHeader": true
+				},
+				"schema": [
+					{
+						"name": "Country Name",
+						"type": "String"
+					},
+					{
+						"name": "Country Code",
+						"type": "String"
+					},
+					{
+						"name": "Region",
+						"type": "String"
+					},
+					{
+						"name": "IncomeGroup",
+						"type": "String"
+					},
+					{
+						"name": "Year",
+						"type": "String"
+					},
+					{
+						"name": "Birth rate, crude (per 1,000 people)",
+						"type": "String"
+					},
+					{
+						"name": "Death rate, crude (per 1,000 people)",
+						"type": "String"
+					},
+					{
+						"name": "Electric power consumption (kWh per capita)",
+						"type": "String"
+					},
+					{
+						"name": "GDP (USD)",
+						"type": "String"
+					},
+					{
+						"name": "GDP per capita (USD)",
+						"type": "String"
+					},
+					{
+						"name": "Individuals using the Internet (% of population)",
+						"type": "String"
+					},
+					{
+						"name": "Infant mortality rate (per 1,000 live births)",
+						"type": "String"
+					},
+					{
+						"name": "Life expectancy at birth (years)",
+						"type": "String"
+					},
+					{
+						"name": "Population density (people per sq. km of land area)",
+						"type": "String"
+					},
+					{
+						"name": "Unemployment (% of total labor force) (modeled ILO estimate)",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/FileLocation')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/worldbanksource')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "FileLocation",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "FileServerLocation",
+						"fileName": "WorldBank.xlsx"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "PK\u0003\u0004\u0014\u0000\u0006\u0000\b\u0000\u0000\u0000!\u0000b�h^\u0001\u0000\u0000�\u0004\u0000\u0000\u0013\u0000\b\u0002[Content_Types].xml �\u0004\u0002(�\u0000\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000���N�0\u0010E�H�C�-Jܲ@\b5��\u0012*Q>�ēƪc[�ii����\u0010B�\u0015j7�\u0012��{2��h�nm���ƻR\f����U^\u001b7/���%�\u0017\u0019�rZY�\u0014\u001b@1\u0019__�f�\u0000�q��R4D�AJ�\u001ah\u0015\u0016>����V\u0011�ƹ\f�Z�9����NV�\u00118ʩ�\u0010��\u0013�ji){^��-I\u0004�\"{�\u0016v^�P!XS)bR�r��K�s(�3�`c\u0002�0���\u000e���\u0006��7\u001eM4\u001a����ZƐk+�|\\|z�(���P��6\u0015h_-[�@�!���\u0000Pk��\u0016�2n�}�?\u0015�L��� ��%�\u0013\u001c��\u001bd����dN\u0018\"m",
+						"type": "String"
+					},
+					{
+						"name": "�ǞDO97*�~��ɸ8�O�c\u001c|n��\u0007�\u0004E��\u0014�\u0011���B\u0010��!$}�����;{���[����2�\u0006\u0000\u0000��\u0003\u0000PK\u0003\u0004\u0014\u0000\u0006\u0000\b\u0000\u0000\u0000!\u0000�U0#�\u0000\u0000\u0000L\u0002\u0000\u0000\u000b\u0000\b\u0002_rels/.rels �\u0004\u0002(�\u0000\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000��MO�0\f��H�����ݐ\u0010BKwAH�!T~�I�\u000f���$\u001bݿ'\u001c\u0010T\u001a�\u0003G�~����<���!��4��\u0012\u0014;#�w����qu\u0007*&r�Fq���\u0011v�����GJy(v��*����K��#F��D�\u0010�.W\u001a\t\u0013�\u001c�\u0016=��Z�MY�b��\u0001�BS����7��ϛז��",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/FileLocation')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/IndiaEconomicIndicatorsPipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "HDI",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "FileServerReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "HDI",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "sink",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "world_indicators_data_dictionary",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "HDI",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "FileServerReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "world_indicators_data_dictionary",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "sink",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "worldbank",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "world_indicators_data_dictionary",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "ExcelSource",
+								"storeSettings": {
+									"type": "FileServerReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "worldbank",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "sink",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "completed",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "worldbank",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "POST",
+							"headers": {},
+							"url": "https://prod-09.centralindia.logic.azure.com:443/workflows/98ec1ae616204971b2c3edf3f3b703f4/triggers/When_an_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_an_HTTP_request_is_received%2Frun&sv=1.0&sig=R1vwagyNDyPuG68sTBJhRV2SSntu_1sBgTAUumLKC_Y",
+							"body": {
+								"value": "{\n    \"pipelineName\" : \"@{pipeline().Pipeline}\",\n    \"status\" : \"completed\",\n    \"runId\" : \"@{pipeline().RunId}\",\n    \"time\":  \"@{utcNow()}\"\n}",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "not completed",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "worldbank",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "POST",
+							"headers": {},
+							"url": "https://prod-09.centralindia.logic.azure.com:443/workflows/98ec1ae616204971b2c3edf3f3b703f4/triggers/When_an_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_an_HTTP_request_is_received%2Frun&sv=1.0&sig=R1vwagyNDyPuG68sTBJhRV2SSntu_1sBgTAUumLKC_Y",
+							"body": {
+								"value": "{\n    \"pipelineName\" : \"@{pipeline().Pipeline}\",\n    \"status\" : \"not completed\",\n    \"runId\" : \"@{pipeline().RunId}\",\n    \"time\":  \"@{utcNow()}\"\n}",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/HDI')]",
+				"[concat(variables('factoryId'), '/datasets/sink')]",
+				"[concat(variables('factoryId'), '/datasets/world_indicators_data_dictionary')]",
+				"[concat(variables('factoryId'), '/datasets/worldbank')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/trigger')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "IndiaEconomicIndicatorsPipeline",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Hour",
+						"interval": 15,
+						"startTime": "2026-09-28T20:02:00",
+						"timeZone": "India Standard Time"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/IndiaEconomicIndicatorsPipeline')]"
+			]
+		}
+	]
+}
