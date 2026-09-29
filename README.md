@@ -31,7 +31,7 @@ Architecture:
 
 5. Curated Data – ADLS Gen2
 
-  After transformation, the processed data is written back to **ADLS Gen2** as curated/processed data, making it ready for downstream analytics.
+   After transformation, the processed data is written back to **ADLS Gen2** as curated/processed data, making it ready for downstream analytics.
 
 6. Analytics Layer – Azure Synapse Analytics
 
@@ -53,7 +53,7 @@ Security and operational monitoring are incorporated into the architecture:
 * Logic Apps sends email notifications when pipeline execution succeeds or fails.
 * Self-Hosted Integration Runtime (SHIR) supports connectivity to required external or private environments.
 
----
+
 
  🛠️ Technologies Used
 
@@ -84,22 +84,7 @@ Security and operational monitoring are incorporated into the architecture:
 
 
 
- 🚀 End-to-End Workflow
 
-
-GitHub
-   ↓
-Azure Data Factory
-   ↓
-ADLS Gen2 – Raw Data
-   ↓
-Azure Databricks
-   ↓
-ADLS Gen2 – Curated Data
-   ↓
-Azure Synapse Analytics
-   ↓
-Power BI
 
 
 
@@ -107,4 +92,4 @@ Power BI
 
 The project provides a complete cloud-based data engineering workflow, taking data from a GitHub source through ingestion, storage, transformation, and analytical processing before delivering the final data to Power BI for visualization.
 
-This architecture demonstrates practical implementation of **Azure data engineering, ETL/ELT, data lake architecture, data transformation, security, orchestration, monitoring, and business intelligence**.
+This architecture demonstrates practical implementation of Azure data engineering, ETL/ELT, data lake architecture, data transformation, security, orchestration, monitoring, and business intelligence.
