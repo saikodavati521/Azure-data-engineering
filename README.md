@@ -15,31 +15,31 @@ Architecture:
 
 1. Data Source – GitHub
 
-Data is maintained in a **GitHub repository** and acts as the primary source for the pipeline.
+   Data is maintained in a **GitHub repository** and acts as the primary source for the pipeline.
 
 2. Data Ingestion – Azure Data Factory
 
-Azure Data Factory (ADF) connects to the source and manages the ingestion process. ADF pipelines are used to control the movement and execution of data-processing activities.
+   Azure Data Factory (ADF) connects to the source and manages the ingestion process. ADF pipelines are used to control the movement and execution of data-processing activities.
 
 3. Raw Data – ADLS Gen2
 
-The ingested data is stored in **Azure Data Lake Storage Gen2** as raw data. This layer preserves the source data before transformation.
+   The ingested data is stored in **Azure Data Lake Storage Gen2** as raw data. This layer preserves the source data before transformation.
 
 4. Data Transformation – Azure Databricks
 
-Azure Databricks** reads the raw data and performs the required data engineering operations such as cleansing, transformation, validation, and processing.
+   Azure Databricks** reads the raw data and performs the required data engineering operations such as cleansing, transformation, validation, and processing.
 
 5. Curated Data – ADLS Gen2
 
-After transformation, the processed data is written back to **ADLS Gen2** as curated/processed data, making it ready for downstream analytics.
+  After transformation, the processed data is written back to **ADLS Gen2** as curated/processed data, making it ready for downstream analytics.
 
 6. Analytics Layer – Azure Synapse Analytics
 
-The curated data is made available through **Azure Synapse Analytics**, which acts as the analytical/data warehouse layer for reporting and business intelligence.
+   The curated data is made available through **Azure Synapse Analytics**, which acts as the analytical/data warehouse layer for reporting and business intelligence.
 
 7. Visualization – Power BI
 
-Power BI connects to the analytical layer and is used to build dashboards, reports, and visualizations from the transformed data.
+   Power BI connects to the analytical layer and is used to build dashboards, reports, and visualizations from the transformed data.
 
 
 
