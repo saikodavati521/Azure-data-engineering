@@ -8,6 +8,8 @@ The pipeline is orchestrated using **Azure Data Factory**, with **Azure Key Vaul
 
 Architecture:
 
+<img width="1780" height="883" alt="Image" src="https://github.com/user-attachments/assets/04bf4eed-8280-4b50-b305-fd98ebb8cfa5" />
+
 
 🔄 Data Pipeline Flow
 
