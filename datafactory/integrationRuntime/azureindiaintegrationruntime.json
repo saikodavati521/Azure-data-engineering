@@ -1,0 +1,6 @@
+{
+	"name": "azureindiaintegrationruntime",
+	"properties": {
+		"type": "SelfHosted"
+	}
+}
